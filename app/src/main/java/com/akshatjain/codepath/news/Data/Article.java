@@ -31,6 +31,27 @@ public class Article {
     @SerializedName("multimedia")
     public List<MediaImage> images;
 
+    public MediaImage getThumbnail(){
+        if(images != null || images.size() > 0){
+            for(MediaImage image : images){
+                if(image.subtype.equalsIgnoreCase("thumbnail")){
+                    return image;
+                }
+            }
+        }
+        return null;
+    }
+
+    public String getThumbnailUrl(){
+        if(images != null || images.size() > 0){
+            for(MediaImage image : images){
+                if(image.subtype.equalsIgnoreCase("thumbnail")){
+                    return image.url;
+                }
+            }
+        }
+        return null;
+    }
 
     @Override
     public String toString() {
