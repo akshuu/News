@@ -38,3 +38,7 @@ captures/
 
 # Keystore files
 *.jks
+.gitignore
+/.idea/
+/.idea/libraries/
+/app/build/
