@@ -57,6 +57,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.Holder>{
             String imageUrl = Constants.NYTIMES_SITE_URL + thumbnailImage.url;
             Glide.with(mContext).load(imageUrl)
                     .crossFade().into(holder.thumbnail);
+        }else{
+            thumbnail.setBackgroundResource(R.drawable.news_icon);
+            thumbnail.setAdjustViewBounds(true);
         }
     }
 

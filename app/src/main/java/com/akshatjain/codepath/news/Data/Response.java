@@ -2,6 +2,7 @@ package com.akshatjain.codepath.news.Data;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public class Response {
 
     @SerializedName("docs")
-    public List<Article> articles;
+    public ArrayList<Article> articles;
 
     @Override
     public String toString() {

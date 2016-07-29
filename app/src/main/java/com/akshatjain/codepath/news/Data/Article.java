@@ -2,6 +2,7 @@ package com.akshatjain.codepath.news.Data;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class Article {
     public HeadLine headline;
 
     @SerializedName("multimedia")
-    public List<MediaImage> images;
+    public ArrayList<MediaImage> images;
 
     public MediaImage getThumbnail(){
         if(images != null || images.size() > 0){
