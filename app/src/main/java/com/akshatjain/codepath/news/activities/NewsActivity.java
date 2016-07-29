@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.akshatjain.codepath.news.Constants;
@@ -23,6 +24,7 @@ import com.akshatjain.codepath.news.adapter.ArticleAdapter;
 import com.akshatjain.codepath.news.adapter.ItemClickSupport;
 import com.akshatjain.codepath.news.adapter.SpacesItemDecoration;
 import com.akshatjain.codepath.news.interfaces.ArticleSearchService;
+import com.akshatjain.codepath.news.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -43,6 +45,9 @@ public class NewsActivity extends AppCompatActivity {
 
     @BindView(R.id.articlesView)
     RecyclerView articlesView;
+
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     ArticleAdapter mAdapter;
     ArrayList<Article> mArticles;
@@ -86,21 +91,30 @@ public class NewsActivity extends AppCompatActivity {
     }
 
     private void getArticles(String query) {
-        Call<MainResponse> responseCall = service.listArticles(query);
-        responseCall.enqueue(new Callback<MainResponse>() {
-            @Override
-            public void onResponse(Call<MainResponse> call, retrofit2.Response<MainResponse> response) {
-                Log.d("NYTIME","response == " + response.body().response);
-                mArticles = response.body().response.articles;
-                mAdapter = new ArticleAdapter(mArticles,NewsActivity.this);
-                articlesView.setAdapter(mAdapter);
-            }
 
-            @Override
-            public void onFailure(Call<MainResponse> call, Throwable t) {
-                Log.d("NYTIME","onFailure : response == " + t.toString());
-            }
-        });
+        if(Utils.isNetworkAvailable(this)) {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setIndeterminate(true);
+            Call<MainResponse> responseCall = service.listArticles(query);
+            responseCall.enqueue(new Callback<MainResponse>() {
+                @Override
+                public void onResponse(Call<MainResponse> call, retrofit2.Response<MainResponse> response) {
+                    progressBar.setVisibility(View.GONE);
+                    Log.d("NYTIME", "response == " + response.body().response);
+                    mArticles = response.body().response.articles;
+                    mAdapter = new ArticleAdapter(mArticles, NewsActivity.this);
+                    articlesView.setAdapter(mAdapter);
+                }
+
+                @Override
+                public void onFailure(Call<MainResponse> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    Log.d("NYTIME", "onFailure : response == " + t.toString());
+                }
+            });
+        }else{
+            Toast.makeText(this,"No Internet connection. Please try again...",Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

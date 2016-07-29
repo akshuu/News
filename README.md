@@ -5,13 +5,13 @@ Code path Week 2 Assignment - http://courses.codepath.com/courses/intro_to_andro
 
 **News** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: **2** hours spent in total
+Time spent: **4** hours spent in total
 
 ## User Stories
 
 The following **required** functionality is completed:
 
-* [ ] User can **search for news article** by specifying a query and launching a search. Search displays a grid of image results from the New York Times Search API.
+* [X] User can **search for news article** by specifying a query and launching a search. Search displays a grid of image results from the New York Times Search API.
 * [ ] User can click on "settings" which allows selection of **advanced search options** to filter results
 * [ ] User can configure advanced search filters such as:
   * [ ] Begin Date (using a date picker)
