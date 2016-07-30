@@ -1,6 +1,8 @@
 package com.akshatjain.codepath.news.activities;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.akshatjain.codepath.news.adapter.ArticleAdapter;
 import com.akshatjain.codepath.news.adapter.EndlessRecyclerViewScrollListener;
 import com.akshatjain.codepath.news.adapter.ItemClickSupport;
 import com.akshatjain.codepath.news.adapter.SpacesItemDecoration;
+import com.akshatjain.codepath.news.fragment.SearchDialogFragment;
 import com.akshatjain.codepath.news.interfaces.ArticleSearchService;
 import com.akshatjain.codepath.news.util.Utils;
 import com.google.gson.Gson;
@@ -36,7 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class NewsActivity extends AppCompatActivity {
+public class NewsActivity extends AppCompatActivity implements SearchDialogFragment.AdvanceSearchQuery{
 
     @BindView(R.id.articlesView)
     RecyclerView articlesView;
@@ -56,6 +59,10 @@ public class NewsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_news);
 
         ButterKnife.bind(this);
+
+        // TODO : Remove this to enable dynamic sizing
+        articlesView.setHasFixedSize(true);
+
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
         articlesView.setLayoutManager(staggeredGridLayoutManager);
 
@@ -224,10 +231,23 @@ public class NewsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_advance) {
+            showEditDialog();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void updateSearchQuery(@Nullable String date, String sortOrder, @Nullable String facets) {
+        Log.d("NYTime","Search query == " + date  +" , sortOrder = " + sortOrder +" , facets = " + facets);
+    }
+
+    private void showEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
+        searchDialogFragment.show(fm, "SearchDialogFragment");
+    }
+
 }

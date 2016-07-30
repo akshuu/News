@@ -41,6 +41,9 @@ public class WebViewActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mWebView.setWebViewClient(new WebViewClient());
+        mWebView.getSettings().setLoadsImagesAutomatically(true);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
         mWebView.setOnTouchListener(new View.OnTouchListener() {
             @Override
