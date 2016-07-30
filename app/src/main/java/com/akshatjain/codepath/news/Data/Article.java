@@ -35,7 +35,7 @@ public class Article {
     public MediaImage getThumbnail(){
         if(images != null || images.size() > 0){
             for(MediaImage image : images){
-                if(image.subtype.equalsIgnoreCase("thumbnail")){
+                if(image.subtype != null && image.subtype.equalsIgnoreCase("thumbnail")){
                     return image;
                 }
             }
@@ -46,7 +46,7 @@ public class Article {
     public String getThumbnailUrl(){
         if(images != null || images.size() > 0){
             for(MediaImage image : images){
-                if(image.subtype.equalsIgnoreCase("thumbnail")){
+                if(image.subtype != null && image.subtype.equalsIgnoreCase("thumbnail")){
                     return image.url;
                 }
             }

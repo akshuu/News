@@ -18,5 +18,5 @@ import retrofit2.http.Query;
 public interface ArticleSearchService {
 
     @GET("/svc/search/v2/articlesearch.json?api-key=85a8d638b48c483f9f9727987aacdf1f")
-    public Call<MainResponse> listArticles(@Query("q") String query);
+    public Call<MainResponse> listArticles(@Query("q") String query,@Query("page") String page);
 }

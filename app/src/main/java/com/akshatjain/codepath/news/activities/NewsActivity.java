@@ -10,7 +10,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -18,9 +17,9 @@ import android.widget.Toast;
 import com.akshatjain.codepath.news.Constants;
 import com.akshatjain.codepath.news.Data.Article;
 import com.akshatjain.codepath.news.Data.MainResponse;
-import com.akshatjain.codepath.news.Data.Response;
 import com.akshatjain.codepath.news.R;
 import com.akshatjain.codepath.news.adapter.ArticleAdapter;
+import com.akshatjain.codepath.news.adapter.EndlessRecyclerViewScrollListener;
 import com.akshatjain.codepath.news.adapter.ItemClickSupport;
 import com.akshatjain.codepath.news.adapter.SpacesItemDecoration;
 import com.akshatjain.codepath.news.interfaces.ArticleSearchService;
@@ -29,13 +28,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Retrofit;
@@ -52,6 +47,8 @@ public class NewsActivity extends AppCompatActivity {
     ArticleAdapter mAdapter;
     ArrayList<Article> mArticles;
     ArticleSearchService service;
+    int mPage =0 ;
+    private String mQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +56,21 @@ public class NewsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_news);
 
         ButterKnife.bind(this);
-        articlesView.setLayoutManager(new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL));
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
+        articlesView.setLayoutManager(staggeredGridLayoutManager);
 
         articlesView.addItemDecoration(new SpacesItemDecoration(16));
 
+        articlesView.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                Log.d("NYTIME", "query == " + mQuery + ", page ==" + page);
+
+                getArticles(mQuery,page);
+            }
+        });
         ItemClickSupport.addTo(articlesView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -90,20 +98,38 @@ public class NewsActivity extends AppCompatActivity {
 //        getArticles();
     }
 
-    private void getArticles(String query) {
+    private void getArticles(String query, final int page) {
 
         if(Utils.isNetworkAvailable(this)) {
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setIndeterminate(true);
-            Call<MainResponse> responseCall = service.listArticles(query);
+            Log.d("NYTIME", "fetching page == " + page);
+
+            Call<MainResponse> responseCall = service.listArticles(query,String.valueOf(page));
             responseCall.enqueue(new Callback<MainResponse>() {
                 @Override
                 public void onResponse(Call<MainResponse> call, retrofit2.Response<MainResponse> response) {
                     progressBar.setVisibility(View.GONE);
                     Log.d("NYTIME", "response == " + response.body().response);
-                    mArticles = response.body().response.articles;
-                    mAdapter = new ArticleAdapter(mArticles, NewsActivity.this);
-                    articlesView.setAdapter(mAdapter);
+                    ArrayList<Article> tmpArticles = response.body().response.articles;
+
+                    int size = mArticles.size();
+                    mArticles.addAll(tmpArticles);
+                    if(mAdapter == null) {
+                        Log.d("NYTIME", "new Adapter == " + mArticles.size());
+                        mAdapter = new ArticleAdapter(mArticles, NewsActivity.this);
+                        articlesView.setAdapter(mAdapter);
+
+                        mAdapter.notifyItemInserted(0);
+                        articlesView.scrollToPosition(0);
+                    }else{
+                        int curSize = mAdapter.getItemCount();
+                        Log.d("NYTIME", "updating items in range == " + curSize + ", " + tmpArticles.size());
+                        mAdapter.notifyItemRangeInserted(curSize,tmpArticles.size());
+
+                    }
+                    mPage = page;
+                    Log.d("NYTIME", "mPage == " + mPage);
                 }
 
                 @Override
@@ -169,7 +195,13 @@ public class NewsActivity extends AppCompatActivity {
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 Log.d("NyTimes","Query == " + query);
-                getArticles(query);
+                if(mAdapter != null)
+                    mAdapter.notifyItemRangeRemoved(0,mArticles.size()-1);
+                mAdapter = null;
+                mArticles = new ArrayList<Article>();
+                mPage = 0;
+                mQuery = query;
+                getArticles(query, mPage);
                 searchView.clearFocus();
 
                 return true;

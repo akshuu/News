@@ -58,7 +58,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.Holder>{
             Glide.with(mContext).load(imageUrl)
                     .crossFade().into(holder.thumbnail);
         }else{
-            thumbnail.setBackgroundResource(R.drawable.news_icon);
+            thumbnail.setBackgroundResource(R.mipmap.ic_launcher);
             thumbnail.setAdjustViewBounds(true);
         }
     }
