@@ -68,8 +68,8 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
 
         ButterKnife.bind(this);
 
-        // TODO : Remove this to enable dynamic sizing
-        articlesView.setHasFixedSize(true);
+//         TODO : Remove this to enable dynamic sizing
+//        articlesView.setHasFixedSize(true);
 
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
         articlesView.setLayoutManager(staggeredGridLayoutManager);
@@ -122,7 +122,7 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
 
             Map<String, String> queryMap = new HashMap<>();
             if(query != null)
-                queryMap.put("query", query);
+                queryMap.put("q", query);
             queryMap.put("page", String.valueOf(page));
             if(beginDate != null)
                 queryMap.put("begin_date", beginDate);
@@ -168,6 +168,7 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
                 public void onFailure(Call<MainResponse> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                     Log.d("NYTIME", "onFailure : response == " + t.toString());
+                    Toast.makeText(NewsActivity.this,"Unable to fetch the Articles. Please try again...",Toast.LENGTH_LONG).show();
                 }
             });
         }else{

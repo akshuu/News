@@ -19,5 +19,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:gravity="center"
+        android:textColor="@android:color/primary_text_dark"
         android:id="@+id/txtHeadline"/>
 </LinearLayout>
