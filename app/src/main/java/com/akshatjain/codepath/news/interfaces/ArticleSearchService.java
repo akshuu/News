@@ -11,6 +11,7 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by akshatjain on 7/27/16.
@@ -18,5 +19,5 @@ import retrofit2.http.Query;
 public interface ArticleSearchService {
 
     @GET("/svc/search/v2/articlesearch.json?api-key=85a8d638b48c483f9f9727987aacdf1f")
-    public Call<MainResponse> listArticles(@Query("q") String query,@Query("page") String page);
+    public Call<MainResponse> listArticles(@QueryMap Map<String,String> query);
 }

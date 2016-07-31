@@ -32,6 +32,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textView2"
+        android:layout_toRightOf="@+id/textView2"
         android:layout_alignLeft="@+id/spinner"
         android:layout_alignStart="@+id/spinner"/>
 
@@ -41,16 +42,20 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Sort order"
         android:id="@+id/textView"
-        android:layout_marginTop="61dp"
+        android:layout_marginTop="15dp"
         android:layout_below="@+id/txtBegin"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignLeft="@+id/txtBegin"
-        android:layout_alignStart="@+id/txtBegin"/>
+        android:layout_alignStart="@+id/txtBegin"
+        />
 
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spinner"
-        android:layout_alignBaseline="@+id/textView"
+        android:layout_below="@+id/txtDate"
+        android:layout_above="@+id/chkArts"
         android:layout_alignBottom="@+id/textView"
         android:layout_alignLeft="@+id/chkArts"
         android:layout_alignStart="@+id/chkArts"/>
@@ -60,18 +65,21 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="News desk values"
+        android:scrollHorizontally="false"
         android:id="@+id/textView2"
         android:layout_below="@+id/textView"
         android:layout_alignLeft="@+id/textView"
         android:layout_alignStart="@+id/textView"
-        android:layout_marginTop="49dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_alignRight="@+id/txtBegin"
+        android:layout_alignEnd="@+id/txtBegin"/>
 
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Arts"
         android:id="@+id/chkArts"
-        android:layout_alignBottom="@+id/textView2"
+        android:layout_alignTop="@+id/textView2"
         android:layout_toRightOf="@+id/textView2"
         android:layout_toEndOf="@+id/textView2"
         android:layout_marginLeft="40dp"

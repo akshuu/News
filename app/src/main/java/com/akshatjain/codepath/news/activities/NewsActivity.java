@@ -1,6 +1,7 @@
 package com.akshatjain.codepath.news.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -31,6 +32,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +43,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewsActivity extends AppCompatActivity implements SearchDialogFragment.AdvanceSearchQuery{
+
+    public static final String SEARCH = "Search";
+    public static final String BEGIN_DATE = "BeginDate";
+    public static final String SORT_ORDER = "SortOrder";
+    public static final String FACETS = "Facets";
 
     @BindView(R.id.articlesView)
     RecyclerView articlesView;
@@ -105,14 +113,31 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
 //        getArticles();
     }
 
-    private void getArticles(String query, final int page) {
+    private void getArticles(String query, final int page, String beginDate, String sortOrder, String facets) {
 
         if(Utils.isNetworkAvailable(this)) {
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setIndeterminate(true);
             Log.d("NYTIME", "fetching page == " + page);
 
-            Call<MainResponse> responseCall = service.listArticles(query,String.valueOf(page));
+            Map<String, String> queryMap = new HashMap<>();
+            if(query != null)
+                queryMap.put("query", query);
+            queryMap.put("page", String.valueOf(page));
+            if(beginDate != null)
+                queryMap.put("begin_date", beginDate);
+
+            if(sortOrder != null){
+                queryMap.put("sort",sortOrder);
+            }
+
+            if(facets != null && facets.length() > 0){
+                queryMap.put("fq",facets);
+            }
+
+            Log.d("NYTIME", "query Map == " + queryMap.toString());
+
+            Call<MainResponse> responseCall = service.listArticles(queryMap);
             responseCall.enqueue(new Callback<MainResponse>() {
                 @Override
                 public void onResponse(Call<MainResponse> call, retrofit2.Response<MainResponse> response) {
@@ -150,6 +175,17 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
         }
     }
 
+    private void getArticles(String query, final int page) {
+
+        SharedPreferences pref = getSharedPreferences(SEARCH,MODE_PRIVATE);
+        String beginDate = pref.getString(BEGIN_DATE,null);
+        String sortOrder  = pref.getString(SORT_ORDER,null);
+        String facets = pref.getString(FACETS,null);
+
+        getArticles(query, page,beginDate,sortOrder,facets);
+
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -157,25 +193,9 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.d("NYTIME","onSaveInstanceState() called");
-//        outState.putSerializable("ArticleList",mArticles);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         Log.d("NYTIME","onResume() called");
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Log.d("NYTIME","onRestoreInstanceState() called");
-//        mArticles = (ArrayList<Article>) savedInstanceState.getSerializable("ArticleList");
-//        Log.d("NYTIME","onRestoreInstanceState() : " + mAdapter.getItemCount());
-
     }
 
     @Override
@@ -236,12 +256,30 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
             return true;
         }
 
+        if(id == R.id.action_clear){
+            SharedPreferences pref = getSharedPreferences(SEARCH,MODE_PRIVATE);
+            pref.edit().clear().apply();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void updateSearchQuery(@Nullable String date, String sortOrder, @Nullable String facets) {
         Log.d("NYTime","Search query == " + date  +" , sortOrder = " + sortOrder +" , facets = " + facets);
+        if(mAdapter != null)
+            mAdapter.notifyItemRangeRemoved(0,mArticles.size()-1);
+        mAdapter = null;
+        mArticles = new ArrayList<Article>();
+        mPage = 0;
+        SharedPreferences pref = getSharedPreferences(SEARCH,MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(BEGIN_DATE,date);
+        editor.putString(SORT_ORDER,sortOrder);
+        editor.putString(FACETS,facets);
+        editor.apply();
+
+        getArticles(mQuery,mPage,date,sortOrder,facets);
     }
 
     private void showEditDialog() {
