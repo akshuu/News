@@ -71,7 +71,12 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
 //         TODO : Remove this to enable dynamic sizing
 //        articlesView.setHasFixedSize(true);
 
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
+        Boolean isTablet = Boolean.valueOf(getString(R.string.isTablet));
+        Log.d("NYTIME","IsTablet ? " + isTablet);
+
+        // If tablet, use 5 columns vs 3 colums for phone
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(isTablet ? 5:3,StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         articlesView.setLayoutManager(staggeredGridLayoutManager);
 
         articlesView.addItemDecoration(new SpacesItemDecoration(16));
@@ -90,7 +95,6 @@ public class NewsActivity extends AppCompatActivity implements SearchDialogFragm
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 // do it
-                Toast.makeText(NewsActivity.this,"Clicked : " + position, Toast.LENGTH_LONG).show();
                 Article article = mArticles.get(position);
                 String url =article.webUrl;
                 Intent webActivity = new Intent(NewsActivity.this,WebViewActivity.class);

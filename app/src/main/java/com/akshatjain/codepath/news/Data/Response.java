@@ -3,7 +3,6 @@ package com.akshatjain.codepath.news.Data;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by akshatjain on 7/27/16.

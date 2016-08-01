@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">News</string>
+    <string name="app_name">Article Search</string>
     <string name="action_settings">Settings</string>
     <string name="action_advance">Advance Search</string>
     <string name="action_clear">Clear Search Options</string>
+    <string name="isTablet">false</string>
 </resources>

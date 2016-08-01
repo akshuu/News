@@ -1,16 +1,11 @@
 package com.akshatjain.codepath.news.interfaces;
 
 import com.akshatjain.codepath.news.Data.MainResponse;
-import com.akshatjain.codepath.news.Data.Response;
 
 import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 /**

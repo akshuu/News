@@ -1,11 +1,13 @@
 package com.akshatjain.codepath.news.fragment;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -20,13 +23,16 @@ import android.widget.TextView;
 import com.akshatjain.codepath.news.R;
 import com.akshatjain.codepath.news.activities.NewsActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * Created by akshatjain on 7/30/16.
  */
-public class SearchDialogFragment extends DialogFragment {
+public class SearchDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     @BindView(R.id.btnSave)
     Button btnSave;
@@ -47,7 +53,7 @@ public class SearchDialogFragment extends DialogFragment {
     @BindView(R.id.spinner)
     Spinner spinnerOrder;
 
-    private Activity mActivity;
+    private AppCompatActivity mActivity;
 
     private AdvanceSearchQuery asQuery;
 
@@ -70,6 +76,12 @@ public class SearchDialogFragment extends DialogFragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerOrder.setAdapter(adapter);
 
+        txtDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(v);
+            }
+        });
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,9 +145,29 @@ public class SearchDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity = activity;
+        mActivity = (AppCompatActivity) activity;
         asQuery = (AdvanceSearchQuery)activity;
+    }
 
+    // attach to an onclick handler to show the date picker
+    public void showDatePickerDialog(View v) {
+        DatePickerFragment newFragment = new DatePickerFragment();
+        newFragment.setTargetFragment(SearchDialogFragment.this, 300);
 
+        newFragment.show(mActivity.getSupportFragmentManager(), "datePicker");
+    }
+
+    // handle the date selected
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        // store the values selected into a Calendar instance
+        final Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, monthOfYear);
+        c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        String date = format.format(c.getTime());
+        txtDate.setText(date);
     }
 }
