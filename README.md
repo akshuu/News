@@ -52,8 +52,7 @@ Here's a walkthrough of implemented user stories:
 
 <img src='http://imgur.com/a/WUeRV' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/WUeRV"><a href="//imgur.com/WUeRV"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
-
+SEE IT HERE : <a href="http://imgur.com/a/WUeRV" target="_blank">Gif video</a>
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
